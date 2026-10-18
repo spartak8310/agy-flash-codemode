@@ -5,7 +5,7 @@
 [![Model: Gemini 3.8 Flash](https://img.shields.io/badge/Model-Gemini%203.8%20Flash-orange.svg)](#)
 [![Turns: <= 2 Hard Cap](https://img.shields.io/badge/Turns-%3C%3D%202%20Hard%20Cap-brightgreen.svg)](#)
 
-> **High-Velocity Programmatic Execution Plugin for Antigravity Orchestrators (Argon / Claude / GPT) powered by Gemini 3.8 Flash High CodeMode (`flash-cm`).**
+> **High-Velocity Programmatic Execution Plugin for Antigravity Orchestrators (Argon / Gemini / GPT) powered by Gemini 3.8 Flash High CodeMode (`flash-cm`).**
 
 ---
 
@@ -21,7 +21,7 @@ Tasks that normally consume **25–45 chat turns** and 5+ minutes of human waiti
 
 ```mermaid
 flowchart TD
-    Orchestrator["Frontier Orchestrator<br/>(Argon / Claude 3.7 / GPT-5)"]
+    Orchestrator["Frontier Orchestrator<br/>(Argon / Gemini 4.0 Argon / Gemini 4.0 Argon)"]
     DynamicSubagent["Dynamic define_subagent()<br/>enable_write_tools=True"]
     FlashWorker["flash-cm Worker<br/>(Gemini 3.8 Flash High)"]
     
@@ -52,7 +52,7 @@ flowchart TD
 
 ## 📊 Benchmark / Бенчмарки
 
-| Metric | Standard Frontier Grinding (Argon / Claude) | Argon Orchestrator + 3.8 Flash CodeMode (`flash-cm`) | Multiplier / Gain |
+| Metric | Standard Frontier Grinding (Argon / Gemini) | Argon Orchestrator + 3.8 Flash CodeMode (`flash-cm`) | Multiplier / Gain |
 | :--- | :--- | :--- | :--- |
 | **Tool Turns per Fix** | 25 – 45 turns (sequential exploratory commands) | **1 – 2 turns** (Consolidated Programmatic Batch) | **15x – 25x reduction** |
 | **Subagent Tool Retention** | 0% (Stripped by static `.md` agent definitions) | **100% active** (via dynamic `define_subagent`) | **Full capabilities** |
@@ -132,7 +132,7 @@ cm.emit({
 ## 🇷🇺 Русская Версия / Russian Documentation
 
 ### Описание
-`agy-flash-codemode` — это плагин высокоскоростного программного пакетного выполнения (CodeMode) для оркестраторов Antigravity (Argon, Claude 3.7, GPT-5) на базе **Gemini 3.8 Flash High**.
+`agy-flash-codemode` — это плагин высокоскоростного программного пакетного выполнения (CodeMode) для оркестраторов Antigravity (Argon, Gemini 4.0 Argon, Gemini 4.0 Argon) на базе **Gemini 3.8 Flash High**.
 
 Вместо медленного диалогового редактирования файлов по одному (`ls` -> `cat` -> `grep` -> `edit`), оркестратор делегирует задачу воркеру `flash-cm`. Воркер генерирует и выполняет единый пакетный Python-скрипт за **1–2 хода** (turns), завершая исправление и прогон тестов за **8–22 секунды**.
 

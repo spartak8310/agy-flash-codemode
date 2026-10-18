@@ -7,7 +7,7 @@ version: 1.0.0
 # Flash CodeMode Skill
 
 ## Purpose
-Enables Frontier Orchestrators (Argon, Claude, GPT) to offload complex file inspection, batch transformations, and verification runs to Gemini 3.8 Flash High CodeMode.
+Enables Frontier Orchestrators (Argon, Gemini, GPT) to offload complex file inspection, batch transformations, and verification runs to Gemini 3.8 Flash High CodeMode.
 
 ## Trigger Conditions
 Use this skill when:
