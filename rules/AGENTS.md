@@ -1,13 +1,13 @@
-# Antigravity Orchestrator Rule: Flash CodeMode Delegation
+# Antigravity Thin Orchestrator Rule: Flash CodeMode Delegation Protocol
 
-## Core Mandate
-When the task requires multi-file inspection, codebase refactoring, mass lint fixes, or regression testing, the Frontier Orchestrator (Argon, Claude, GPT) MUST delegate execution to Gemini 3.8 Flash High CodeMode (`flash-cm`).
+## 1. Hard Anti-Drift Lock for Main Orchestrator (Argon 4.0 / Frontier)
+- **STRICT FORBIDDEN ACTION:** The orchestrator thread is STRICTLY FORBIDDEN from performing more than ONE (`>1`) manual `view_file`, `replace_file_content`, or exploratory `run_command` (`ls`, `cat`, `grep`) sequentially.
+- If a task involves more than one file inspection, editing, or multi-step execution, the orchestrator MUST IMMEDIATELY shift into **Thin Orchestrator Mode** and delegate the entire batch execution to Gemini 3.8 Flash High CodeMode (`flash-cm`).
+- Burning frontier reasoning context on iterative tool churning destroys latency, causes context drift, and drains token budgets.
 
-## Execution Protocol
-
-### Law 1: Dynamic Subagent Instantiation (Tool Privilege Preservation)
-- **NEVER** declare static `.md` subagent definitions for code workers. Antigravity security policies strip tool dispatch from static declarations.
-- **ALWAYS** invoke dynamic delegation at runtime:
+## 2. Dynamic Subagent Definition & Parallel Fan-Out
+- **The Antigravity Disk Quirk:** NEVER create static markdown agent files (e.g. `.agents/agents/flash-cm.md` or `.gemini/agents/flash-cm.md`) on disk. In Antigravity, existing static `.md` agent files force subagents into sandbox mode and OVERRIDE `enable_write_tools=True`, completely stripping write and execution tools!
+- **Dynamic Instantiation:** ALWAYS define the subagent dynamically at runtime:
   ```python
   define_subagent(
       name="flash-cm",
@@ -16,23 +16,36 @@ When the task requires multi-file inspection, codebase refactoring, mass lint fi
       description="OMP CodeMode batch execution worker"
   )
   ```
+- **Parallel Fan-Out:** When multiple modules, files, or packages require inspection or repair, fan out across multiple workers simultaneously using `invoke_subagent(..., Model="flash")` in parallel instead of sequential execution.
 
-### Law 2: Strict OMP Turn Cap (<= 2 Tool Calls)
-The spawned `flash-cm` worker must adhere to the 2-turn ceiling:
-- **Turn 1 (Consolidated Batch):** Run ONE Python script via `run_command` importing `flash_cm` to inspect, surgically patch, and verify via tests.
-- **Turn 2 (Emergency Patch):** Permitted only if Turn 1 outputs an unexpected error.
-- Send the final structured receipt back to the orchestrator via `send_message`.
+## 3. OMP CodeMode Constitution (<= 2 Tool Turns Hard Cap)
+Every spawned `flash-cm` worker operates under a strict two-turn ceiling:
+- **Turn 1 (Single-Shot Gather, Repair & Verify):** The worker compiles all inspections, file reads, atomic replacements, and automated test runs into a single Python batch script importing `flash_cm`.
+- **Turn 2 (Edge Recovery Only):** Permitted ONLY if Turn 1 encounters an unforeseen syntax or edge-case failure.
+- **Immediate Receipt Emission:** The subagent emits a dense structured receipt (`<<<FLASH_CM_RECEIPT>>>`) and immediately terminates with `send_message(Recipient=caller_id)`.
 
-### Law 3: 19-Second Rule & 25s SIGALRM Watchdog
-- Interactive CLI scripts, blocking sleeps, and unmonitored loops are prohibited.
-- Batch scripts must rely on `flash_cm.arm_watchdog(25)` to prevent orchestrator deadlocks.
+## 4. The 19-Second Zero-Inline-Script Law
+- **STRICT PROHIBITION:** NEVER pass >15 lines of inline `python3 -c '...'` or complex nested shell quotes inside `run_command`.
+- **Reasoning Delay Trap:** Inline scripts trigger massive multi-thousand-token thinking loops in LLMs attempting to escape nested quotes and shell metacharacters, leading to 19s+ thinking delays and command timeouts.
+- **The Law:** ALWAYS write the batch script to a file first (e.g. `cat << 'PYEOF' > /tmp/task.py ... PYEOF` or `write_to_file`) and execute cleanly:
+  ```bash
+  python3 /tmp/task.py
+  ```
+- Always set `WaitMsBeforeAsync=10000` to allow synchronous completion within 10 seconds.
 
-### Dispatch Prompt Template
-```
-You are a flash-cm CodeMode Worker. Execute in <= 2 turns total:
-1. Write and run a single consolidated Python batch script importing flash_cm.
-2. Inspect target files with fast_find() / batch_read().
-3. Apply atomic surgical replacements with surgical_replace().
-4. Verify with parallel_run(["pytest ..."]).
-5. Emit structured receipt and send_message to orchestrator.
-```
+## 5. Subagent Anti-Hang Law (25s SIGALRM Hardware Watchdog)
+- Every CodeMode worker batch script must import `flash_cm` at line 1:
+  ```python
+  import sys
+  import flash_cm as cm
+  cm.arm_watchdog(seconds=25)
+  ```
+- The POSIX `signal.SIGALRM` watchdog will violently terminate hung scripts at 25 seconds (exit code 124), guaranteeing the worker never stalls the orchestrator with infinite loops or blocking network calls.
+- Use `cm.fast_find()` and `cm.batch_read()` to bypass directory traversals of `.git`, `node_modules`, and cache trees.
+
+## 6. Mandatory Subagent Cleanup (`manage_subagents`)
+- As soon as the orchestrator receives the completion receipt via `send_message`, it MUST harvest the telemetry and execute:
+  ```python
+  manage_subagents(Action="kill_all")
+  ```
+- No orphaned subagent processes or dormant worker contexts may remain active after receipt processing.

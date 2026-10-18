@@ -84,14 +84,13 @@ flowchart TD
 
 ### One-Line Install
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<username>/agy-flash-codemode/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/spartak8310/agy-flash-codemode/main/install.sh | bash
 ```
 
 ### Local / Git Clone
 ```bash
-git clone https://github.com/<username>/agy-flash-codemode.git
-cd agy-flash-codemode
-./install.sh
+# 1-Liner Quickstart
+git clone https://github.com/spartak8310/agy-flash-codemode.git && cd agy-flash-codemode && ./install.sh
 ```
 
 ---
