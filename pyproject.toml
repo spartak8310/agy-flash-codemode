@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agy-flash-codemode"
+version = "1.0.0"
+description = "Antigravity Flash CodeMode - Programmatic Batch Execution Engine powered by Gemini 3.8 Flash"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Antigravity Community"}
+]
+keywords = ["antigravity", "codemode", "gemini-flash", "orchestrator", "ai-agents"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.setuptools]
+py-modules = ["flash_cm"]
+package-dir = {"" = "sdk"}
